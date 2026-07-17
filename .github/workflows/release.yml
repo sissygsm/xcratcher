@@ -1,0 +1,25 @@
+name: Crear Release
+on:
+  release:
+    types: [published]
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Instalar dependencias y compilar
+        run: |
+          npm ci
+          npm run build
+      - name: Empaquetar en ZIP
+        run: zip -r extension.zip dist/ -x "*.git*"
+      - name: Subir Release a GitHub
+        uses: softprops/action-gh-release@v2
+        with:
+          files: extension.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
