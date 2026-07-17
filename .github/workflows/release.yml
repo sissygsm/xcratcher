@@ -1,25 +1,17 @@
-name: Crear Release
+name: Create Release
 on:
   release:
     types: [published]
 jobs:
-  build-and-release:
+  package-and-release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Instalar dependencias y compilar
-        run: |
-          npm ci
-          npm run build
-      - name: Empaquetar en ZIP
-        run: zip -r extension.zip dist/ -x "*.git*"
-      - name: Subir Release a GitHub
+      - name: Package source
+        run: zip -r xcratcher-src.zip src requirements.txt README.md LICENCE -x "*__pycache__*"
+      - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
         with:
-          files: extension.zip
+          files: xcratcher-src.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
