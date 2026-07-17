@@ -1,5 +1,6 @@
 #########################################################
-# Just need to edit FIREFOX_PROFILE & X_USERNAME
+# Configure FIREFOX_PROFILE_CODE & X_USERNAME in .env
+# (copy .env.example to .env and fill in your values)
 #########################################################
 
 from yt_dlp import YoutubeDL
@@ -8,7 +9,7 @@ from yt_dlp.utils import DownloadError
 import os
 import time
 
-import secrets
+import config
 
 # Create downloads directory if it doesn't exist
 DOWNLOADS_DIR = "./downloads"
@@ -28,7 +29,7 @@ def download_pending_links(username, file="pending_links.txt"):
     # Get the url id number to name the mp4 file
     output_path = os.path.join(user_dir, f'%(original_url.-19:)s.%(ext)s')
     ydl_opts = {
-        'cookiesfrombrowser': ('firefox', secrets.FIREFOX_PROFILE),
+        'cookiesfrombrowser': ('firefox', config.FIREFOX_PROFILE),
         'outtmpl': output_path,
         'format': 'bestvideo+bestaudio/best',
         'merge_output_format': 'mp4',
@@ -57,4 +58,4 @@ def download_pending_links(username, file="pending_links.txt"):
         os.remove(file_path)
 
 
-download_pending_links(username=secrets.X_USERNAME)
+download_pending_links(username=config.X_USERNAME)
