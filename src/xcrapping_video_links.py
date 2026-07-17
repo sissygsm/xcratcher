@@ -1,5 +1,6 @@
 #########################################################
-# Just need to edit FIREFOX_PROFILE, PC_USER & X_USERNAME
+# Configure FIREFOX_PROFILE_CODE & X_USERNAME in .env
+# (copy .env.example to .env and fill in your values)
 #########################################################
 
 from selenium import webdriver
@@ -11,7 +12,7 @@ import time
 import os
 import platform
 
-import secrets
+import config
 
 # Create downloads directory if it doesn't exist
 DOWNLOADS_DIR = "./downloads"
@@ -24,7 +25,7 @@ def get_firefox_profile_path():
 
     if system == "Windows":
         profile_path = os.path.join(
-            os.environ["APPDATA"],"Mozilla", "Firefox", "Profiles", secrets.FIREFOX_PROFILE
+            os.environ["APPDATA"],"Mozilla", "Firefox", "Profiles", config.FIREFOX_PROFILE
         )
 
         if not os.path.exists(profile_path):
@@ -32,9 +33,9 @@ def get_firefox_profile_path():
     elif system == "Linux":
         # Possible paths
         classic_path = os.path.expanduser(
-            f"~/.mozilla/firefox/{secrets.FIREFOX_PROFILE}")
+            f"~/.mozilla/firefox/{config.FIREFOX_PROFILE}")
         snap_path = os.path.expanduser(
-            f"~/snap/firefox/common/.mozilla/firefox/{secrets.FIREFOX_PROFILE}")
+            f"~/snap/firefox/common/.mozilla/firefox/{config.FIREFOX_PROFILE}")
 
         # Detect which exists
         if os.path.exists(classic_path):
@@ -105,6 +106,6 @@ def save_pending_links(links, username, file="pending_links.txt"):
     print(f"\n{len(links)} new video links saved to {file_path}")
 
 
-x_links = scrap_links_withFirefox(secrets.X_USERNAME)
-video_links_only = filter_links(x_links, secrets.X_USERNAME)
-save_pending_links(video_links_only, secrets.X_USERNAME)
+x_links = scrap_links_withFirefox(config.X_USERNAME)
+video_links_only = filter_links(x_links, config.X_USERNAME)
+save_pending_links(video_links_only, config.X_USERNAME)
