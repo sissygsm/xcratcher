@@ -1,0 +1,28 @@
+name: Desplegar a Chrome Web Store
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+jobs:
+  deploy-webstore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Compilar y Empaquetar
+        run: |
+          npm ci
+          npm run build
+          zip -r extension.zip dist/
+      - name: Subir a Chrome Web Store
+        uses: mobilefirstllc/cws-publish@latest
+        with:
+          action: 'publish' # Puedes usar 'upload' para subirla en borrador sin publicar
+          client_id: ${{ secrets.CLIENT_ID }}
+          client_secret: ${{ secrets.CLIENT_SECRET }}
+          refresh_token: ${{ secrets.REFRESH_TOKEN }}
+          extension_id: ${{ secrets.EXTENSION_ID }}
+          zip_file: 'extension.zip'
