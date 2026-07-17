@@ -1,21 +1,19 @@
-name: Extension CI
+name: Python CI
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
 jobs:
-  test-and-build:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          node-version: '20'
-      - name: Instalar dependencias
-        run: npm ci
-      - name: Ejecutar pruebas
-        run: npm run test
-      - name: Compilar proyecto
-        run: npm run build
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Compile-check scripts
+        run: python -m compileall src
