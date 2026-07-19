@@ -1,6 +1,7 @@
 #########################################################
-# Configure FIREFOX_PROFILE_CODE & X_USERNAME in .env
-# (copy .env.example to .env and fill in your values)
+# Configure X_USERNAME in .env
+# (copy .env.example to .env and fill in your values;
+#  the Firefox profile is auto-detected by config.py)
 #########################################################
 
 from yt_dlp import YoutubeDL
