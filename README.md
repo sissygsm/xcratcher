@@ -31,13 +31,9 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-  - `FIREFOX_PROFILE_CODE`: your Firefox profile code, i.e. the random string before `.default-release`. The profile is created by default and is usually located in:
-
-    ```bash
-    C:\Users\your_user\AppData\Roaming\Mozilla\Firefox\Profiles
-    ```
-
   - `X_USERNAME`: your X/Twitter handle, without the `@` symbol.
+
+  - `FIREFOX_PROFILE_CODE` (optional): the Firefox profile is auto-detected — the script scans your Firefox profiles for one with an active X/Twitter login. Only set this if you have multiple logged-in profiles and need to force a specific one.
 
 `.env` is gitignored, so your values are never committed.
 
@@ -74,6 +70,22 @@ python src/dling_videos_from_links.py
 It will read the pending_links.txt file from the folder named after your username, download each video using yt_dlp, and save them in the same folder.
 
 If a rate-limit exceeded error occurs, the script will stop. In that case, wait for the rate to reset and run the script again.
+
+### Makefile shortcuts
+
+```bash
+make install                    # pip install -r requirements.txt
+make scrape                     # run xcrapping_video_links.py
+make download                   # run dling_videos_from_links.py
+make all                        # scrape then download
+make setup                      # open Firefox with the auto-detected profile, and leave it open
+make setup ACCOUNT=<username>   # also point the scraper at a different X account, same Firefox profile
+make shutdown                   # close the Firefox opened by `make setup`, delete cached account snapshots
+```
+
+`make setup` opens Firefox with your auto-detected profile and leaves it running in the background — it stays open across as many `make setup`/`make scrape` calls as you want, until you explicitly run `make shutdown` to close it. Adding `ACCOUNT=<username>` also swaps `X_USERNAME` in `.env` to point the scraper at a different account's media tab (e.g. `https://x.com/<username>`), while keeping the same logged-in Firefox profile — no need to switch Firefox accounts. It caches the outgoing account's `.env` under `.cache/accounts/` (gitignored) first, so switching back with `make setup ACCOUNT=<previous_username>` is instant.
+
+If Firefox is already open from a previous `make setup`, running it again with a different `ACCOUNT` does **not** open a second Firefox window (Firefox refuses a second process on the same profile with an "already running but not responding" dialog) — it just navigates the existing window to the new account's page.
 
 ## Conclusions
 This project demonstrates how X/Twitter can be used as a learning platform for working with libraries like yt_dlp and selenium for web automation.
